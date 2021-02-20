@@ -1,0 +1,123 @@
+swagger: "2.0"
+info:
+  title: "Sites statistic API"
+  description: "Sites statistic API"
+  version: "1.0.0"
+schemes:
+  - "http"
+host: 127.0.0.1:9999
+basePath: /api
+
+paths:
+
+  /auth/register:
+    post:
+      tags:
+        - "auth"
+      summary: "Register new user"
+      description: ""
+      produces:
+        - "application/json"
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "RegisterRequestBody"
+          in: "body"
+          description: "Body of request for register of user"
+          required: true
+          schema:
+            $ref: "#/definitions/RegisterRequestModel"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/DefaultSuccessResponseModel"
+        422:
+          description: "Validation error"
+          schema:
+            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+
+  /auth/login:
+    post:
+      tags:
+        - "auth"
+      summary: "Login of user"
+      description: ""
+      produces:
+        - "application/json"
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "LoginRequestBody"
+          in: "body"
+          description: "Body of request for login of user"
+          required: true
+          schema:
+            $ref: "#/definitions/LoginRequestModel"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/DefaultSuccessResponseModel"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        422:
+          description: "Validation error"
+          schema:
+            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+
+definitions:
+
+  DefaultSuccessResponseModel:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+
+  DefaultValidationErrorsResponseModel:
+    type: object
+    properties:
+      errors:
+        type: object
+
+  DefaultErrorResponseModel:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+
+  RegisterRequestModel:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+
+  LoginRequestModel:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+      password:
+        type: string
