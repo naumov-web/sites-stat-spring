@@ -10,7 +10,7 @@ basePath: /api
 
 paths:
 
-  /auth/register:
+  /v1/auth/register:
     post:
       tags:
         - "auth"
@@ -41,7 +41,7 @@ paths:
           schema:
             $ref: "#/definitions/DefaultErrorResponseModel"
 
-  /auth/login:
+  /v1/auth/login:
     post:
       tags:
         - "auth"

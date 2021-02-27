@@ -3,11 +3,16 @@ package ru.naumovweb.sitesstat.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.naumovweb.sitesstat.dto.requests.LoginDto;
 import ru.naumovweb.sitesstat.dto.requests.RegisterDto;
 import ru.naumovweb.sitesstat.models.User;
 import ru.naumovweb.sitesstat.security.jwt.JwtTokenProvider;
@@ -60,5 +65,34 @@ public class AuthController extends BaseRestController {
         response.put("token", token);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("login")
+    public ResponseEntity login(@Valid @RequestBody final LoginDto requestDto, final BindingResult binding) {
+
+        if (binding.hasErrors()) {
+            return ResponseEntity.badRequest().body(mapBindingToResource(binding));
+        }
+
+        try {
+            String email = requestDto.getEmail();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, requestDto.getPassword()));
+            User user = userService.findByEmail(email);
+
+            if (user == null) {
+                throw new UsernameNotFoundException("User with email: " + email + " not found");
+            }
+
+            String token = jwtTokenProvider.createToken(user.getEmail());
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("id", user.getId());
+            response.put("email", user.getEmail());
+            response.put("token", token);
+
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
     }
 }
