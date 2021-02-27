@@ -7,6 +7,8 @@ import ru.naumovweb.sitesstat.models.User;
 import ru.naumovweb.sitesstat.repositories.contracts.IUserRepository;
 import ru.naumovweb.sitesstat.services.contracts.IUserService;
 
+import java.util.Date;
+
 @Service
 public class UserService implements IUserService {
 
@@ -22,6 +24,8 @@ public class UserService implements IUserService {
     @Override
     public User register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreated_at(new Date());
+        user.setUpdated_at(new Date());
 
         return userRepository.save(user);
     }
