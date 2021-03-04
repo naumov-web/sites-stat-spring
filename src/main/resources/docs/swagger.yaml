@@ -8,6 +8,13 @@ schemes:
 host: 127.0.0.1:9999
 basePath: /api
 
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
 paths:
 
   /v1/auth/register:
@@ -76,6 +83,45 @@ paths:
           schema:
             $ref: "#/definitions/DefaultErrorResponseModel"
 
+  /v1/account/sites:
+    post:
+      tags:
+        - "sites"
+      summary: "Create of site"
+      description: ""
+      produces:
+        - "application/json"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "header"
+          name: Authorization
+          required: true
+          type: string
+        - name: "CreateSiteRequestBody"
+          in: "body"
+          description: "Body of request for creation of site"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateSiteRequestModel"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/DefaultSuccessResponseModel"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        422:
+          description: "Validation error"
+          schema:
+            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+
 definitions:
 
   DefaultSuccessResponseModel:
@@ -120,4 +166,15 @@ definitions:
       email:
         type: string
       password:
+        type: string
+
+  CreateSiteRequestModel:
+    type: object
+    required:
+      - name
+      - host
+    properties:
+      name:
+        type: string
+      host:
         type: string
