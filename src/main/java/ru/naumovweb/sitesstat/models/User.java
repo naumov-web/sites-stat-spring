@@ -4,7 +4,9 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Simple domain object that represents user.
@@ -22,4 +24,7 @@ public class User extends BaseModel {
 
     @Column(name = "password")
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Site> sites;
 }
