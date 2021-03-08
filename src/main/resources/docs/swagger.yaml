@@ -84,6 +84,59 @@ paths:
             $ref: "#/definitions/DefaultErrorResponseModel"
 
   /v1/account/sites:
+    get:
+      tags:
+        - "sites"
+      summary: "Get list of sites"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - in: "header"
+          name: Authorization
+          required: true
+          type: string
+        - in: "query"
+          name: "limit"
+          type: integer
+          description: "Limit of items in response"
+        - in: "query"
+          name: "offset"
+          type: integer
+          description: "Offset of items in response"
+        - in: "query"
+          name: "sort_by"
+          type: string
+          description: "Sort by column"
+          enum:
+            - id
+            - name
+            - host
+            - created_at
+        - in: "query"
+          name: "sort_direction"
+          type: string
+          description: "Sort direction"
+          enum:
+            - asc
+            - desc
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/SitesListResponseModel"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        422:
+          description: "Validation error"
+          schema:
+            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
     post:
       tags:
         - "sites"
@@ -177,4 +230,26 @@ definitions:
       name:
         type: string
       host:
+        type: string
+
+  SitesListResponseModel:
+    type: object
+    properties:
+      count:
+        type: integer
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/SiteResponseModel"
+
+  SiteResponseModel:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      host:
+        type: string
+      created_at:
         type: string

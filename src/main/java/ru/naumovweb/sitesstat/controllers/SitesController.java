@@ -4,17 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.naumovweb.sitesstat.dto.common.ListItemsDto;
 import ru.naumovweb.sitesstat.dto.requests.CreateSiteDto;
+import ru.naumovweb.sitesstat.dto.resources.ListResourceDto;
+import ru.naumovweb.sitesstat.dto.resources.SiteDto;
 import ru.naumovweb.sitesstat.models.Site;
 import ru.naumovweb.sitesstat.models.User;
 import ru.naumovweb.sitesstat.services.contracts.ISiteService;
 import ru.naumovweb.sitesstat.services.impl.UserService;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,5 +62,22 @@ public class SitesController extends BaseRestController {
         response.put("host", site.getHost());
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "")
+    public ResponseEntity index(
+            @RequestParam(name = "limit", required = false) Integer limit,
+            @RequestParam(name = "offset", required = false) Integer offset,
+            @RequestParam(name = "sort_by", required = false) String sortBy,
+            @RequestParam(name = "sort_direction", required = false) String sortDirection
+    ) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByEmail(email);
+
+        ListItemsDto<Site> itemsDto = siteService.indexForUser(user, limit, offset, sortBy, sortDirection);
+
+        return ResponseEntity.ok(
+                (new ListResourceDto<Site>(itemsDto, SiteDto.class, Site.class)).getResponse()
+        );
     }
 }
