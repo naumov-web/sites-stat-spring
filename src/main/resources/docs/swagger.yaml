@@ -39,7 +39,7 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/DefaultSuccessResponseModel"
-        422:
+        400:
           description: "Validation error"
           schema:
             $ref: "#/definitions/DefaultValidationErrorsResponseModel"
@@ -70,14 +70,14 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/DefaultSuccessResponseModel"
+        400:
+          description: "Validation error"
+          schema:
+            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
         401:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/DefaultErrorResponseModel"
-        422:
-          description: "Validation error"
-          schema:
-            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
         500:
           description: "Internal server error"
           schema:
@@ -129,10 +129,6 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/DefaultErrorResponseModel"
-        422:
-          description: "Validation error"
-          schema:
-            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
         500:
           description: "Internal server error"
           schema:
@@ -162,14 +158,62 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/DefaultSuccessResponseModel"
+        400:
+          description: "Validation error"
+          schema:
+            $ref: "#/definitions/DefaultValidationErrorsResponseModel"
         401:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/DefaultErrorResponseModel"
-        422:
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+
+  /v1/account/sites/{site}:
+    put:
+      tags:
+        - "sites"
+      summary: "Update of site"
+      description: ""
+      produces:
+        - "application/json"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "header"
+          name: Authorization
+          required: true
+          type: string
+        - in: "path"
+          name: "site"
+          type: integer
+          required: true
+          description: "Id of site"
+        - name: "UpdateSiteRequestBody"
+          in: "body"
+          description: "Body of request for updating of site"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateSiteRequestModel"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/DefaultSuccessResponseModel"
+        400:
           description: "Validation error"
           schema:
             $ref: "#/definitions/DefaultValidationErrorsResponseModel"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
         500:
           description: "Internal server error"
           schema:
@@ -252,4 +296,15 @@ definitions:
       host:
         type: string
       created_at:
+        type: string
+
+  UpdateSiteRequestModel:
+    type: object
+    required:
+      - name
+      - host
+    properties:
+      name:
+        type: string
+      host:
         type: string
