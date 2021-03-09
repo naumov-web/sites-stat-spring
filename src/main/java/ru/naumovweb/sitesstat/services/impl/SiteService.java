@@ -9,6 +9,7 @@ import ru.naumovweb.sitesstat.repositories.contracts.ISiteRepository;
 import ru.naumovweb.sitesstat.services.contracts.ISiteService;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class SiteService implements ISiteService {
@@ -38,5 +39,18 @@ public class SiteService implements ISiteService {
             String sortDirection
     ) {
         return siteRepository.indexForUser(user, limit, offset, sortBy, sortDirection);
+    }
+
+    @Override
+    public Optional<Site> findByIdForUser(User user, Long id) {
+        return siteRepository.findByIdForUser(user, id);
+    }
+
+    @Override
+    public Site update(Site site, String name, String host) {
+        site.setName(name);
+        site.setHost(host);
+
+        return siteRepository.save(site);
     }
 }
