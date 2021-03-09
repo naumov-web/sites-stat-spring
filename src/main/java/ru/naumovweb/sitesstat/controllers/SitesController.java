@@ -7,8 +7,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.naumovweb.sitesstat.dto.common.ListItemsDto;
 import ru.naumovweb.sitesstat.dto.requests.CreateSiteDto;
+import ru.naumovweb.sitesstat.dto.requests.UpdateSiteDto;
 import ru.naumovweb.sitesstat.dto.resources.ListResourceDto;
 import ru.naumovweb.sitesstat.dto.resources.SiteDto;
+import ru.naumovweb.sitesstat.enums.ResponseStatusCodesEnum;
 import ru.naumovweb.sitesstat.models.Site;
 import ru.naumovweb.sitesstat.models.User;
 import ru.naumovweb.sitesstat.services.contracts.ISiteService;
@@ -18,6 +20,7 @@ import javax.validation.Valid;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * REST controller for site entity requests (create, list, update, delete)
@@ -79,5 +82,38 @@ public class SitesController extends BaseRestController {
         return ResponseEntity.ok(
                 (new ListResourceDto<Site>(itemsDto, SiteDto.class, Site.class)).getResponse()
         );
+    }
+
+    @PutMapping(value = "{id}")
+    public ResponseEntity update(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody final UpdateSiteDto requestDto,
+            final BindingResult binding
+    ) {
+        if (binding.hasErrors()) {
+            return ResponseEntity.badRequest().body(mapBindingToResource(binding));
+        }
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByEmail(email);
+
+        Optional<Site> site = siteService.findByIdForUser(user, id);
+
+        if (!site.isPresent()) {
+            return ResponseEntity.status(ResponseStatusCodesEnum.NOT_FOUND).body(null);
+        }
+
+        Site updatedSite = siteService.update(
+                site.get(),
+                requestDto.getName(),
+                requestDto.getHost()
+        );
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("id", updatedSite.getId());
+        response.put("name", updatedSite.getName());
+        response.put("host", updatedSite.getHost());
+
+        return ResponseEntity.ok(response);
     }
 }

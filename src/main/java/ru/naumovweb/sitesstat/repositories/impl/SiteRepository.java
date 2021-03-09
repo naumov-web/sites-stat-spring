@@ -12,6 +12,8 @@ import ru.naumovweb.sitesstat.repositories.contracts.ISiteBaseRepository;
 import ru.naumovweb.sitesstat.repositories.contracts.ISiteRepository;
 import ru.naumovweb.sitesstat.repositories.specifications.SiteSpecification;
 
+import java.util.Optional;
+
 @Repository
 public class SiteRepository extends BaseRepository implements ISiteRepository {
 
@@ -39,5 +41,10 @@ public class SiteRepository extends BaseRepository implements ISiteRepository {
         dto.setCount(pageDto.getTotalElements());
 
         return dto;
+    }
+
+    @Override
+    public Optional<Site> findByIdForUser(User user, Long id) {
+        return baseRepository.findOne(SiteSpecification.filterByUserAndId(user, id));
     }
 }
