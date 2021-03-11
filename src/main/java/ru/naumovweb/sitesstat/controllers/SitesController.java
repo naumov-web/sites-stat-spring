@@ -116,4 +116,23 @@ public class SitesController extends BaseRestController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping(value = "{id}")
+    public ResponseEntity delete(@PathVariable(name = "id") Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByEmail(email);
+
+        Optional<Site> site = siteService.findByIdForUser(user, id);
+
+        if (!site.isPresent()) {
+            return ResponseEntity.status(ResponseStatusCodesEnum.NOT_FOUND).body(null);
+        }
+
+        siteService.delete(site.get().getId());
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("success", true);
+
+        return ResponseEntity.ok(null);
+    }
 }
