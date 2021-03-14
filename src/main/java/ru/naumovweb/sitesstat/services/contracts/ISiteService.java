@@ -20,4 +20,6 @@ public interface ISiteService {
     Optional<Site> findByIdForUser(User user, Long id);
 
     Site update(Site site, String name, String host);
+
+    void delete(Long id);
 }

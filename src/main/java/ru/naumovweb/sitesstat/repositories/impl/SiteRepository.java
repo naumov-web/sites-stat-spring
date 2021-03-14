@@ -47,4 +47,9 @@ public class SiteRepository extends BaseRepository implements ISiteRepository {
     public Optional<Site> findByIdForUser(User user, Long id) {
         return baseRepository.findOne(SiteSpecification.filterByUserAndId(user, id));
     }
+
+    @Override
+    public void delete(Long id) {
+        baseRepository.deleteById(id);
+    }
 }

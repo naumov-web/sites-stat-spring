@@ -218,6 +218,40 @@ paths:
           description: "Internal server error"
           schema:
             $ref: "#/definitions/DefaultErrorResponseModel"
+    delete:
+      tags:
+        - "sites"
+      summary: "Delete of site"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - in: "header"
+          name: Authorization
+          required: true
+          type: string
+        - in: "path"
+          name: "site"
+          type: integer
+          required: true
+          description: "Id of site"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/DefaultSuccessResponseModel"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
 
 definitions:
 

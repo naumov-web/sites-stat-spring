@@ -12,4 +12,6 @@ public interface ISiteRepository {
     ListItemsDto<Site> indexForUser(User user, Integer limit, Integer offset, String sortBy, String sortDirection);
 
     Optional<Site> findByIdForUser(User user, Long id);
+
+    void delete(Long id);
 }

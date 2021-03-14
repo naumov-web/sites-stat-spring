@@ -53,4 +53,9 @@ public class SiteService implements ISiteService {
 
         return siteRepository.save(site);
     }
+
+    @Override
+    public void delete(Long id) {
+        siteRepository.delete(id);
+    }
 }
