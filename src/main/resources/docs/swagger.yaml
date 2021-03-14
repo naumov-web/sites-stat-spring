@@ -253,6 +253,42 @@ paths:
           schema:
             $ref: "#/definitions/DefaultErrorResponseModel"
 
+  /v1/account/sites/{site}/api-keys:
+    post:
+      tags:
+        - "api keys"
+      summary: "Create API key for site"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - in: "header"
+          name: Authorization
+          required: true
+          type: string
+        - in: "path"
+          name: "site"
+          type: integer
+          required: true
+          description: "Id of site"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/DefaultSuccessResponseModel"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/DefaultErrorResponseModel"
+
 definitions:
 
   DefaultSuccessResponseModel:
